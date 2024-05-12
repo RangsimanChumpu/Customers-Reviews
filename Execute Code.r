@@ -17,7 +17,7 @@ dbListFields(con, "customers")
 dbListFields(con, "products")
 dbListFields(con, "reviews")
 
-#หาค่าเฉลี่ย rating ของสินค้าเเต่ละรายการ
+# หาค่าเฉลี่ย rating ของสินค้าเเต่ละรายการ
 dbGetQuery(con, 
 "select 
   pr.product_id AS product_id, 
@@ -29,7 +29,7 @@ dbGetQuery(con,
  GROUP BY 1,2"
 )
 
-#ดึงข้อมูลลูกค้าที่ให้ Rating มากกว่า 4
+# ดึงข้อมูลลูกค้าที่ให้ Rating มากกว่า 4
 dbGetQuery(con, 
 "select 
   cu.name, 
@@ -86,3 +86,30 @@ dbGetQuery(con,
  WHERE review_text LIKE '%excellent%' OR review_text LIKE '%impressive%' OR 
   review_text LIKE '%recommend%' and rating >= 4"           
 )
+
+# หาค่าเฉลี่ย rating ในเเต่ละวันในสัปดาห์
+dbGetQuery(con, 
+"SELECT
+	CASE STRFTIME('%w', date)
+    	WHEN '0' THEN 'Sunday'
+        WHEN '1' THEN 'Monday'
+        WHEN '2' THEN 'Tuesday'
+        WHEN '3' THEN 'Wednesday'
+        WHEN '4' THEN 'Thursday'
+        WHEN '5' THEN 'Friday'
+        ELSE 'Saturday'
+    END 'day_of_week',
+    AVG(rating) AS avg_rate
+FROM Reviews
+GROUP BY 1" )
+
+# ลูกค้าเเต่ละคนมักเขียนรีวิวเฉลี่ยกี่คำ
+dbGetQuery(con,
+"SELECT 
+	  cu.name,
+    cu.contact_info,
+    AVG(LENGTH(re.review_text)) AS langth_text_avg
+FROM Customers AS cu 
+INNER JOIN Reviews AS re ON cu.customer_id = re.customer_id
+GROUP BY 1
+ORDER BY langth_text_avg DESC;" )
