@@ -8,4 +8,6 @@ This project aims to understand feedback from customers that stores use to impro
   
 2. From Execute Code file
    - To gain insights, I connect to Posit Cloud, which allows me to query ElephantSQL using SQL.
+  
+3. ER Diagram
 
